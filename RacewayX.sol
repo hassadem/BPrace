@@ -26,6 +26,9 @@ contract RacewayX is ERC20, Ownable, ERC20Snapshot {
     
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(ERC20, ERC20Snapshot) {
         super._beforeTokenTransfer(from, to, amount);
+         if (bpEnabled && !BPDisabledForever){
+        BP.protect(from, to, amount);
+      }
     }
 
     function setBPAddress(address _bp) external onlyOwner  {
@@ -40,11 +43,5 @@ contract RacewayX is ERC20, Ownable, ERC20Snapshot {
     function setBotProtectionDisableForever() external onlyOwner {
         require(BPDisabledForever == false);
         BPDisabledForever = true;
-    }
-
-    function _transfer(address from, address to, uint256 amount) internal override{
-        if (bpEnabled && !BPDisabledForever){
-        BP.protect(from, to, amount);
-      }
     }
 }
